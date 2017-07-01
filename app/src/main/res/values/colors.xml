@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="bg_dark">#302A30</color>
+    <color name="bg_darkbrown">#583037</color>
+    <color name="bg_softred">#852E50</color>
+    <color name="bg_softorange">#C76D54</color>
+    <color name="bg_sand">#EBA352</color>
+    <color name="bg_smoke">#F8F6FF</color>
+
+    <color name="bg_trans_dark">#CC302A30</color>
+
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@color/bg_darkbrown">
+
+    <Space style="@style/SpaceVerti"/>
+
+    <TextView style="@style/DescribeTxt"
+        android:text="1. Jahr auswählen"/>
+    <TextView style="@style/DescribeTxt"
+        android:text="2. Event auswählen"/>
+    <TextView style="@style/DescribeTxt"
+        android:text="3. Bilder für Upload aussuchen"/>
+    <TextView style="@style/DescribeTxt"
+        android:text="4. Upload starten"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/lachkopf2"/>
+
+    <Space style="@style/SpaceVerti"/>
+
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/startbutton"
+        android:textSize="20sp"
+        android:background="@color/bg_dark"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/bg_smoke"/>
+
+    <Space style="@style/SpaceVerti"/>
+
+
+</LinearLayout>

@@ -1,0 +1,124 @@
+package de.teufelslochschradde.schraddeftp;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+import de.teufelslochschradde.schraddeftp.ftp_com.FTP_Task;
+
+/**
+ * Created by dirk on 12.06.2017.
+ */
+
+public class ChooseEventFragment extends Fragment {
+
+    MainActivity mthisActivity;
+    ListView mEventList;
+    FloatingActionButton fab;
+    FTP_Task mftpTask;
+    ListView listV_events;
+    ArrayAdapter<String> mArrayAdapter;
+    LinearLayout overlayLoading;
+
+    // Create a List from String Array elements
+
+    final ArrayList<String> filesList = new ArrayList<>();
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        ViewGroup mRootView = (ViewGroup) inflater.inflate(
+                R.layout.fragment_eventlist, container, false);
+
+        // Create an ArrayAdapter from List Years
+        mArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, filesList);
+
+        mthisActivity = (MainActivity) getActivity();
+
+        overlayLoading = (LinearLayout) mthisActivity.findViewById(R.id.overlay_loading);
+
+        listV_events = (ListView) mRootView.findViewById(R.id.listV_events);
+        listV_events.setAdapter(mArrayAdapter);
+
+        listV_events.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mthisActivity.setSelectedEvent(filesList.get(position));
+                mthisActivity.mPager.setCurrentItem(0, true);
+                mthisActivity.mPager.setCurrentItem(3, true);
+                fab.setVisibility(View.GONE);
+            }
+        });
+
+        return mRootView;
+    }
+
+
+    final Handler ftphandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            switch(msg.what){
+                case FTP_Task.MSG_ID_CHDIR:
+                    listV_events.setVisibility(View.VISIBLE);
+                    for(int i=0; i<mftpTask.getFtpConnection().getFolders().size()-2; i++){
+                        filesList.add(mftpTask.getFtpConnection().getFolders().get(i));
+                    }
+                    mArrayAdapter.notifyDataSetChanged();
+                    overlayLoading.setVisibility(View.GONE);
+                    break;
+                case FTP_Task.MSG_ID_UPLOAD:
+
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        String selectedYear = mthisActivity.getSelectedYear();
+
+        if(selectedYear == null) {
+
+            mthisActivity.mPager.setCurrentItem(1, true);
+
+        } else {
+            mftpTask = new FTP_Task(ftphandler);
+            mftpTask.ChangeDirectory("Dirk/Bilder/" + selectedYear);
+
+            overlayLoading.setVisibility(View.VISIBLE);
+
+            fab = (FloatingActionButton) mthisActivity.findViewById(R.id.fab);
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+        }
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        onStart();
+    }
+}
+

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Schradde PicTool</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="startbutton">Let\'s go!</string>
+    <string name="yearpicktxt">Choose Year</string>
+    <string name="eventpicktxt">Choose Event</string>
+</resources>
