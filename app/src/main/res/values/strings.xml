@@ -2,7 +2,27 @@
     <string name="app_name">Schradde PicTool</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Main Screen -->
+    <string name="overlay_loading">loading...</string>
+    <string name="overlay_connecting">connecting...</string>
+
+    <!-- Start Screen -->
+    <string name="intro_1st_line">1. select year</string>
+    <string name="intro_2nd_line">2. select event</string>
+    <string name="intro_3rd_line">3. choose images to upload</string>
+    <string name="intro_4th_line">4. start uploading</string>
+
     <string name="startbutton">Let\'s go!</string>
+
+    <!-- year selection screen -->
     <string name="yearpicktxt">Choose Year</string>
+
+    <!-- event selection screen -->
     <string name="eventpicktxt">Choose Event</string>
+
+    <!-- image selection screen -->
+    <string name="folderselection">"selected folder:</string>
+
+
+
 </resources>

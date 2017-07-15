@@ -1,4 +1,4 @@
-package de.teufelslochschradde.schraddeftp;
+package de.teufelslochschradde.schraddeftp.image_mani;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -31,12 +31,14 @@
         android:background="@color/bg_trans_dark"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true">
 
         <TextView
+            android:id="@+id/overlay_loading_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="loading..."
+            android:text="@string/overlay_connecting"
             android:layout_marginBottom="20dp"/>
 
         <ProgressBar

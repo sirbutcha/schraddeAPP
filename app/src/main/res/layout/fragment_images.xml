@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_darkbrown">
+
+    <Space style="@style/SpaceVerti"
+        android:layout_weight="0.5"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/bg_smoke"
+        android:text="@string/folderselection"/>
+
+    <Space style="@style/SpaceVerti"
+        android:layout_weight="0.5"/>
+
+    <TextView
+        android:id="@+id/selected_folders"
+        android:layout_width="match_parent"
+        android:textColor="@color/bg_smoke"
+        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content" />
+
+    <Space style="@style/SpaceVerti"
+        android:layout_weight="0.5"/>
+
+    <GridView
+        android:id="@+id/grid_view_img"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:numColumns="auto_fit"
+        android:columnWidth="90dp"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        android:gravity="center"
+        android:stretchMode="columnWidth" >
+
+    </GridView>
+
+
+</LinearLayout>

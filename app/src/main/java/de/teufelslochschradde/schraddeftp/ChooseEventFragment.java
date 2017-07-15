@@ -15,7 +15,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import de.teufelslochschradde.schraddeftp.ftp_com.FTP_Task;
+import de.teufelslochschradde.schraddeftp.ftp_com.Butcha_FTP;
 
 /**
  * Created by dirk on 12.06.2017.
@@ -23,13 +23,16 @@ import de.teufelslochschradde.schraddeftp.ftp_com.FTP_Task;
 
 public class ChooseEventFragment extends Fragment {
 
+    private String LOG_INFO = "ChEventFrag";
+
     MainActivity mthisActivity;
     ListView mEventList;
     FloatingActionButton fab;
-    FTP_Task mftpTask;
     ListView listV_events;
     ArrayAdapter<String> mArrayAdapter;
     LinearLayout overlayLoading;
+    Butcha_FTP mFtpClient;
+    String mselectedYear = " ";
 
     // Create a List from String Array elements
 
@@ -46,6 +49,8 @@ public class ChooseEventFragment extends Fragment {
 
         mthisActivity = (MainActivity) getActivity();
 
+        mFtpClient = mthisActivity.getFtpClient();
+
         overlayLoading = (LinearLayout) mthisActivity.findViewById(R.id.overlay_loading);
 
         listV_events = (ListView) mRootView.findViewById(R.id.listV_events);
@@ -54,10 +59,10 @@ public class ChooseEventFragment extends Fragment {
         listV_events.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mthisActivity.setSelectedEvent(filesList.get(position));
-                mthisActivity.mPager.setCurrentItem(0, true);
-                mthisActivity.mPager.setCurrentItem(3, true);
                 fab.setVisibility(View.GONE);
+                mthisActivity.setSelectedEvent(filesList.get(position));
+                mthisActivity.mPager.setCurrentItem(1, true);
+                mthisActivity.mPager.setCurrentItem(3, true);
             }
         });
 
@@ -65,19 +70,25 @@ public class ChooseEventFragment extends Fragment {
     }
 
 
-    final Handler ftphandler = new Handler(){
+    final Handler mFtpHandler = new Handler(){
         @Override
         public void handleMessage(Message msg){
             switch(msg.what){
-                case FTP_Task.MSG_ID_CHDIR:
-                    listV_events.setVisibility(View.VISIBLE);
-                    for(int i=0; i<mftpTask.getFtpConnection().getFolders().size()-2; i++){
-                        filesList.add(mftpTask.getFtpConnection().getFolders().get(i));
+                case Butcha_FTP.MSG_ID_CHDIR:
+                    if(msg.arg1 == Butcha_FTP.MSG_SUCCESS) {
+                        listV_events.setVisibility(View.VISIBLE);
+                        for (int i = 0; i < mFtpClient.getFolders().size(); i++) {
+                            filesList.add(mFtpClient.getFolders().get(i));
+                        }
+                        mArrayAdapter.notifyDataSetChanged();
+
+                    }else{
+                        // TODO
+                        mselectedYear = null;
                     }
-                    mArrayAdapter.notifyDataSetChanged();
                     overlayLoading.setVisibility(View.GONE);
                     break;
-                case FTP_Task.MSG_ID_UPLOAD:
+                case Butcha_FTP.MSG_ID_UPLOAD:
 
                     break;
                 default:
@@ -89,36 +100,38 @@ public class ChooseEventFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-
-        String selectedYear = mthisActivity.getSelectedYear();
-
-        if(selectedYear == null) {
-
-            mthisActivity.mPager.setCurrentItem(1, true);
-
-        } else {
-            mftpTask = new FTP_Task(ftphandler);
-            mftpTask.ChangeDirectory("Dirk/Bilder/" + selectedYear);
-
-            overlayLoading.setVisibility(View.VISIBLE);
-
-            fab = (FloatingActionButton) mthisActivity.findViewById(R.id.fab);
-
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-
-        }
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        onStart();
+
+        String selectedYear = mthisActivity.getSelectedYear();
+        if(selectedYear == null) {
+            mthisActivity.mPager.setCurrentItem(1, true);
+        }else {
+
+            if (mselectedYear.equals(selectedYear)) {
+               // do nothing
+            } else {
+                mFtpClient.setHandler(mFtpHandler);
+                mFtpClient.doChangeDir(selectedYear);
+                overlayLoading.setVisibility(View.VISIBLE);
+                mselectedYear = selectedYear;
+            }
+
+        }
+
+        fab = (FloatingActionButton) mthisActivity.findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
+
 }
 

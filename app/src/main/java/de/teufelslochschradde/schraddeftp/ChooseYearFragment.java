@@ -11,10 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import de.teufelslochschradde.schraddeftp.ftp_com.FTP_Task;
+import de.teufelslochschradde.schraddeftp.ftp_com.Butcha_FTP;
 
 /**
  * Created by dirk on 12.06.2017.
@@ -22,13 +23,15 @@ import de.teufelslochschradde.schraddeftp.ftp_com.FTP_Task;
 
 public class ChooseYearFragment extends Fragment {
 
+    private String LOG_INFO = "ChYearFrag";
     MainActivity mthisActivity;
 
-    FTP_Task mftpTask;
+    Butcha_FTP mFtpClient;
     ListView listV_years;
 
     ArrayAdapter<String> mArrayAdapter;
     LinearLayout overlayLoading;
+    TextView overlayLoadTxt;
     // Create a List from String Array elements
     final ArrayList<String> filesList = new ArrayList<>();
 
@@ -43,7 +46,10 @@ public class ChooseYearFragment extends Fragment {
 
         mthisActivity = (MainActivity) getActivity();
 
+        mFtpClient = mthisActivity.getFtpClient();
+
         overlayLoading = (LinearLayout) mthisActivity.findViewById(R.id.overlay_loading);
+        overlayLoadTxt = (TextView) mthisActivity.findViewById(R.id.overlay_loading_txt);
 
         listV_years = (ListView) mRootView.findViewById(R.id.listV_years);
         listV_years.setAdapter(mArrayAdapter);
@@ -64,19 +70,25 @@ public class ChooseYearFragment extends Fragment {
     }
 
 
-    final Handler ftphandler = new Handler(){
+    final Handler mFtpHandler = new Handler(){
         @Override
         public void handleMessage(Message msg){
             switch(msg.what){
-                case FTP_Task.MSG_ID_CHDIR:
-                    listV_years.setVisibility(View.VISIBLE);
-                    for(int i=0; i<mftpTask.getFtpConnection().getFolders().size()-2; i++){
-                        filesList.add(mftpTask.getFtpConnection().getFolders().get(i));
+                case Butcha_FTP.MSG_ID_CHDIR:
+                    if(msg.arg1 == Butcha_FTP.MSG_SUCCESS) {
+                        listV_years.setVisibility(View.VISIBLE);
+                        for (int i = 0; i < mFtpClient.getFolders().size(); i++) {
+                            filesList.add(mFtpClient.getFolders().get(i));
+                        }
+                        mArrayAdapter.notifyDataSetChanged();
+
+                    }else{
+                        // TODO
                     }
-                    mArrayAdapter.notifyDataSetChanged();
                     overlayLoading.setVisibility(View.GONE);
+                    overlayLoadTxt.setText(getString(R.string.overlay_loading));
                     break;
-                case FTP_Task.MSG_ID_UPLOAD:
+                case Butcha_FTP.MSG_ID_UPLOAD:
 
                     break;
                 default:
@@ -88,8 +100,9 @@ public class ChooseYearFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+
         overlayLoading.setVisibility(View.VISIBLE);
-        mftpTask = new FTP_Task(ftphandler);
-        mftpTask.ChangeDirectory("Dirk/Bilder/");
+        mFtpClient.setHandler(mFtpHandler);
+        mFtpClient.doChangeDir(".");
     }
 }

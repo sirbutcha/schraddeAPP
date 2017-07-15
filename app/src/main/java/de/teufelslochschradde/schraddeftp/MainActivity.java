@@ -1,8 +1,6 @@
 package de.teufelslochschradde.schraddeftp;
 
 import android.support.v4.app.FragmentManager;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -15,15 +13,14 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
+import de.teufelslochschradde.schraddeftp.ftp_com.Butcha_FTP;
 
 
 public class MainActivity extends AppCompatActivity{
 
     private static final int NUM_PAGES = 4;
 
-    ArrayList <Uri> imageList = new ArrayList<>();
-
+    private Butcha_FTP mFtpClient;
 
     public ViewPager mPager;
     private PagerAdapter mPagerAdapter;
@@ -57,10 +54,16 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onPageSelected(int position) {
                 if(position==2 && mSelectedYear != null){
+                    fab.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_create_new_folder_40dp));
                     fab.setVisibility(View.VISIBLE);
+                } else if(position==3 && mSelectedEvent != null){
+                        fab.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_image_40dp));
+                        fab.setVisibility(View.VISIBLE);
+
                 } else {
                     fab.setVisibility(View.GONE);
                 }
+
             }
 
             @Override
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        mFtpClient = new Butcha_FTP();
 
     }
 
@@ -108,27 +112,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-
-    private void openGallery(){
-        Intent gallery = new Intent();
-        gallery.setType("image/*");
-        gallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        gallery.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(gallery, "android.intent.action.SEND_MULTIPLE"), 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            int iPicCount = data.getClipData().getItemCount();
-            for (int i=0; i< iPicCount; i++){
-                imageList.add(data.getClipData().getItemAt(i).getUri());
-                Uri selectedPic = data.getClipData().getItemAt(i).getUri();
-            }
-        }
-    }
-
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -143,6 +126,8 @@ public class MainActivity extends AppCompatActivity{
                    return new ChooseYearFragment();
                 case 2:
                     return new ChooseEventFragment();
+                case 3:
+                    return new ChooseImgsFragment();
                 default:
                     return new StartFragment();
             }
@@ -153,6 +138,10 @@ public class MainActivity extends AppCompatActivity{
         public int getCount() {
             return NUM_PAGES;
         }
+    }
+
+    public Butcha_FTP getFtpClient(){
+        return mFtpClient;
     }
 
     public void setSelectedEvent(String event){
