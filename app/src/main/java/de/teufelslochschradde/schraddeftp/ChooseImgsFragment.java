@@ -186,8 +186,6 @@ public class ChooseImgsFragment extends Fragment {
 
         } catch (FileNotFoundException e) {
             // handle errors
-        } catch (IOException e) {
-            // handle errors
         } finally {
             if (parcelFD != null)
                 try {
